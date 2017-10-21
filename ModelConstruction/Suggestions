@@ -1,0 +1,15 @@
+take the functions that are defined inside the other functions and make them top-level functions. 
+  Then use codetools::findGlobals() to find which variables they reference and now need to be passed to them.
+  Make these changes in the definitions and then calls to those functions.
+     A bit of work for no gain in speed.  But this makes the code clearer.
+     
+Assign common computations that are repeated.
+   E.g. see ifelse.R taken from alfalfa.Kcb.cycles().
+
+ifelse
+
+use crop name for rownames on crop.parameters and then use
+  crop.parameters[crop, ] rather than [ which(crop.parameters$crop == crop) ]
+
+
+Break long commands into parts.
