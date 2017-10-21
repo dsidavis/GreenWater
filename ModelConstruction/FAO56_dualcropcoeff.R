@@ -16,8 +16,12 @@
 # changed Ir decision function on 8/23/17 to accomodate different irrigation decisions for wine grapes
 # concept for wine irrigation decisions is to set a min Ks threshold and irrigate to allowable depletion when that threshold is crossed, as opposed to irrigating to field capacity when allowable depletion is crossed
 #script to implement the FAO56 dual crop coefficient ET routine
-modelscaffoldDir <- 'C:/Users/smdevine/Desktop/Allowable_Depletion/model_scaffold/run_model/Oct2017' #location of input data; copied from Sep2017 on 10/18/17
-resultsDir <- 'C:/Users/smdevine/Desktop/Allowable_Depletion/results/Oct2017'
+#modelscaffoldDir <- 'C:/Users/smdevine/Desktop/Allowable_Depletion/model_scaffold/run_model/Oct2017' #location of input data; copied from Sep2017 on 10/18/17
+#resultsDir <- 'C:/Users/smdevine/Desktop/Allowable_Depletion/results/Oct2017'
+
+modelscaffoldDir = "Data"
+resultsDir  = "Results"
+
 rounding_digits <- 3
 setwd(modelscaffoldDir)
 irrigation.parameters <- read.csv('irrigation_parameters.csv', stringsAsFactors = F)
@@ -527,7 +531,7 @@ FAO56DualCropCalc <- function(cropname, cropcode, AD.percentage, root_depth, irr
     } else {
         return(data.frame(GW.capture.net = df$Dr.end[which(df$doys.model == Jharv)] - df$Dr.end[which(df$doys.model == Jdev)]))
     }
-  }
+ }
   #do.call(rbind, lapply(split(model.result, model.result$water.year), GreenWaterCaptureCalc))
   if (length(U2.df$DOY)==length(RHmin.df$DOY) & length(U2.df$DOY)==length(ETo.df$DOY)) {
     doys.model <- U2.df$DOY
