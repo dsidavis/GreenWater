@@ -1,0 +1,84 @@
+Dei.end - numeric 5096
+P - numeric 5096
+Ir - numeric 5096
+fw - numeric 5096
+i - integer 1
+Dei.initial - numeric 5096
+Dep.end - numeric 5096 
+TEW.parameter - numeric 1
+REW.parameter - numeric 1
+Dep.initial - numeric 5096
+fewp - numeric 5096
+fewi - numeric 5096
+Kri - numeric 5096 
+W - numeric 5096
+Kcmax - numeric 5096
+Kcb.adjusted - numeric 5096
+DPei - numeric 5096 
+ETo - numeric 5096 
+Krp - numeric 5096 
+DPep - numeric 5096
+Kei - numeric 5096
+Kep - numeric 5096
+Ep - numeric 5096
+Dr.initial - numeric 5096
+Ks - numeric 5096 
+Ei - numeric 5096
+PAW - numeric 1 
+Kc.ns - numeric 5096
+ETc.ns - numeric 5096
+RDI.min - logical 1 
+doys.model - integer 5096 
+Jdev - integer 1 
+Jharv - integer 1 
+days.no.irr - integer 1 
+cropname - character 1 
+Kc.act - numeric 5096 
+Dr.end - numeric 5096 
+AD - numeric 1 
+DPr - numeric 5096 
+ETc.act - numeric 5096 
+#END
+
+funs = codetools::findGlobals(loopMain, FALSE)$fu
+
+ "DeiEndCalc"     "DeiInitialCalc"
+ "DepEndCalc"     "DepInitialCalc" "DPeiCalc"      
+ "DPepCalc"       "DPrCalc"        "DrEndCalc"     
+ "DrInitialCalc"  "EiCalc"         "EpCalc"        
+ "ETcactCalc"     "ETcnsCalc"      "for"           
+ "IrCalc"         "KcactCalc"      "KcnsCalc"      
+ "KeiCalc"        "KepCalc"        "KrCalc"        
+ "KsCalc"         "WCalc"         
+
+funs = funs[sapply(funs, exists, globalenv(), inherits = FALSE) ]
+ofuns = lapply(funs, function(x) codetools::findGlobals(get(x)))
+
+names(table(unlist(ofuns)))
+ [1] "-"               "!"               "!="             
+ [4] "("               "["               "{"              
+ [7] "*"               "/"               "&"              
+[10] "%in%"            "+"               "<"              
+[13] "<-"              "=="              ">"              
+[16] "|"               "$"               "crop.parameters"
+[19] "GrapeLastIrr"    "harvest.days"    "if"             
+[22] "length"          "max"             "min"            
+[25] "return"          "which"          
+
+
+codetools::findGlobals(GrapeLastIrr)
+ [1] "-"            "["            "{"            "*"           
+ [5] "&"            "+"            "<-"           "<="          
+ [9] "=="           ">"            ">="           "$"           
+[13] "$<-"          "AD"           "cbind"        "cropname"    
+[17] "data.frame"   "days.no.irr"  "doys.model"   "Dr.initial"  
+[21] "ETo"          "i"            "if"           "Jharv"       
+[25] "Kcb.adjusted" "max"          "mean"         "P"           
+[29] "return"       "sum"          "tapply"       "which"       
+
+But GrapeLastIrr is only operational for cropname == 'grapes.wine'
+
+
+
+
+EpCalc and EiCalc are the same code.
