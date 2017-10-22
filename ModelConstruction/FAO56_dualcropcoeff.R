@@ -370,7 +370,9 @@ if(TRUE) {
       ETc.act[i] <- ETcactCalc(Kc.act, ETo, i) #could take this out of loop
   }
 } else {
-  .Call("loopMain", AD, cropname, days.no.irr, doys.model, ETo, fewi, fewp, fw, Jdev, Jharv, Kcb.adjusted, Kcmax, model.length, P, PAW, RDI.min, REW.parameter, TEW.parameter, Dei.end, Ir, Dei.initial, Dep.end, Dep.initial, Kri, Krp, W, DPep, DPei, Kei, Kep, Ep, Ei, Kc.ns, ETc.ns, Dr.end, Dr.initial, Ks, DPr, Kc.act, ETc.act, integer()) # harvest.days is not defined in our situation.
+
+    .Call("loopMain", AD, cropname, days.no.irr, doys.model, ETo, fewi, fewp, fw, Jdev, Jharv, Kcb.adjusted, Kcmax, model.length, P, PAW, RDI.min, REW.parameter, TEW.parameter, Dei.end, Ir,
+                      Dei.initial, Dep.end, Dep.initial, Kri, Krp, W, DPep, DPei, Kei, Kep, Ep, Ei, Kc.ns, ETc.ns, Dr.end, Dr.initial, Ks, DPr, Kc.act, ETc.act, integer()) # harvest.days is not defined in our situation.
 }
 #tm2 = proc.time()
 #cat("Loop\n")
@@ -389,13 +391,13 @@ tm1 = proc.time()
     ridx = which(model.scaffold.results$unique_model_code==model.code & model.scaffold.results$cokey == cokey)
     colidx = which(colnames(model.scaffold.results)=='Irr.1'):(which(colnames(model.scaffold.results)=='GW.capture.net'))
     model.scaffold.results[ridx, colidx] <- merge(cbind(
-                                          do.call(rbind, lapply(split(model.result, model.result$years), IrDateCalc, Jdev = Jdev, Jharv = Jharv, days.no.irr = days.no.irr)),
-                                          do.call(rbind, lapply(split(model.result, model.result$years), WaterBalanceCalc, AD, days.no.irr, Jdev, Jharv, PAW)),
-                                          do.call(rbind, lapply(split(model.result, model.result$years), GreenWaterIrr1Calc, Jdev)),
-                                          do.call(rbind, lapply(split(model.result, model.result$years), DeepPercCalc, days.no.irr, Jdev, Jharv))),
-                                         do.call(rbind, lapply(split(model.result, model.result$water.year), GreenWaterCaptureCalc, Jdev, Jharv, Jmid, cropname)),
-                                        by="row.names", all=TRUE)[ ,2:26]
-
+                                                       do.call(rbind, lapply(split(model.result, model.result$years), IrDateCalc, Jdev = Jdev, Jharv = Jharv, days.no.irr = days.no.irr)),
+                                                       do.call(rbind, lapply(split(model.result, model.result$years), WaterBalanceCalc, AD, days.no.irr, Jdev, Jharv, PAW)),
+                                                       do.call(rbind, lapply(split(model.result, model.result$years), GreenWaterIrr1Calc, Jdev)),
+                                                       do.call(rbind, lapply(split(model.result, model.result$years), DeepPercCalc, days.no.irr, Jdev, Jharv))),
+                                                  do.call(rbind, lapply(split(model.result, model.result$water.year), GreenWaterCaptureCalc, Jdev, Jharv, Jmid, cropname)),
+                                                  by="row.names", all=TRUE)[ ,2:26]
+         
 #tm2 = proc.time()
 #cat("Time for model.result")
 #print(tm2 - tm1)    
