@@ -1,18 +1,28 @@
+With the C code, we are getting slightly less than a 10x speed up.
+This is less than expected, so there may be room for more.
+Also, the code may be wrong. It is a very quick translation of the R code to C code.
+So be very cautious of my quick experiments. I just wanted to check that compiling would
+make things faster.
+
+
 take the functions that are defined inside the other functions and make them top-level functions. 
   Then use codetools::findGlobals() to find which variables they reference and now need to be passed to them.
   Make these changes in the definitions and then calls to those functions.
      A bit of work for no gain in speed.  But this makes the code clearer.
+     We can test these functions separately.
+     We can replace them with alternatives and see if we get the same answer, improved performance.
      
 Assign common computations that are repeated.
-   E.g. see ifelse.R taken from alfalfa.Kcb.cycles().
+   E.g. see ifelse.R taken from alfalfa.Kcb.cycles() and pulling out one computation that is common to several expressins.
 
-ifelse
+ifelse - generally avoid if it is just for convenience
 
 use crop name for rownames on crop.parameters and then use
   crop.parameters[crop, ] rather than [ which(crop.parameters$crop == crop) ]
 
 
-Break long commands into parts.
+Break long commands into separate computations.
+ Clearer and we can test the intermediate results.
 
 
 In GrapeLastIrr 
@@ -28,3 +38,13 @@ summing the means seems like it could be simplified, but maybe not.
 DepEndCalc
   Don't assign result to a local variable.
       Dep.end.est <- max(Dep.end[i - 1] - P[i] + Ep[i] / fewp[i] + DPep[i], 0)
+
+
+Avoid setwd().
+ Build the path to the file you want to create and pass that to read.csv() and write.csv(), etc.
+ Changing directories is the same as global variables.
+
+ If one does use setwd(), make certain to use
+   originalDirectory = getwd()
+   on.exit(setwd(originalDirectory))
+ to make certain we always end up in the same working directory as we started.
