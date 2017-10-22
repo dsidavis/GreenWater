@@ -1,0 +1,9 @@
+
+In the shell
+
+R CMD SHLIB cloopImpl.c
+
+Then in R
+
+dyn.load("cloopImpl.so"); system.time(source("FAO56_dualcropcoeff.R"))
+
