@@ -13,3 +13,18 @@ use crop name for rownames on crop.parameters and then use
 
 
 Break long commands into parts.
+
+
+In GrapeLastIrr 
+ df <- data.frame(cbind(Kcb.adjusted, ETo, P, doys.model))
+ Avoid the cbind()
+
+
+summing the means seems like it could be simplified, but maybe not.
+ daily.ETcb <- tapply(df$ETcb, df$doys.model, mean)
+ daily.P <- tapply(df$P, df$doys.model, mean)
+ last.irr <- Dr.initial[i] + sum(daily.ETcb) - sum(daily.P) - AD
+
+DepEndCalc
+  Don't assign result to a local variable.
+      Dep.end.est <- max(Dep.end[i - 1] - P[i] + Ep[i] / fewp[i] + DPep[i], 0)
