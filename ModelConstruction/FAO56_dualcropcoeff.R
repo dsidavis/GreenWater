@@ -222,6 +222,8 @@ FAO56DualCropCalc <- function(cropname, cropcode, AD.percentage, root_depth, irr
   if (nrow(model.scaffold.crop) > 10000) {
     save.times <- seq(from=10000, to=nrow(model.scaffold.crop), by=10000)
   } else {save.times <- NA}
+
+tm1 = proc.time()  
   for (n in row_start:nrow(model.scaffold.crop)) {
     model.code <- model.scaffold.crop$unique_model_code[n]
     PAW <- model.scaffold.crop[[paw.var]][n]*10
@@ -258,7 +260,10 @@ FAO56DualCropCalc <- function(cropname, cropcode, AD.percentage, root_depth, irr
     if (is.null(days.no.irr)) {
       print(paste0('Null value returned for days.no.irr for model.scaffold.crop n = ', as.character(n), ', likely a result of a low PAW: ', as.character(PAW), ' mm.'))
       next
-    }
+  }
+
+#print(proc.time() - tm1)
+    
     Kcmax <- Kcb.df$Kc.max
     Dei.initial <- numeric(length = model.length)
     DPei <- numeric(length = model.length)
@@ -309,7 +314,38 @@ FAO56DualCropCalc <- function(cropname, cropcode, AD.percentage, root_depth, irr
     Kc.act[1] <- KcactCalc(Ks, Kcb.adjusted, Kei, Kep, 1)
     ETc.act[1] <- ETcactCalc(Kc.act, ETo, 1)
     Dr.end[1] <- TEW.parameter * TEW.fraction - P[1] + Kc.act[1] * ETo[1] + DPr[1] #initial calc
-    for (i in 2:model.length) { #now for days 2...model.length after initialization
+
+
+if(FALSE) {    
+    ans = loopMain(AD, cropname, days.no.irr, doys.model, ETo, fewi, fewp, fw, Jdev, Jharv, Kcb.adjusted, Kcmax, model.length, P, PAW, RDI.min, REW.parameter, TEW.parameter, Dei.end, Ir, Dei.initial, Dep.end, Dep.initial, Kri, Krp, W, DPep, DPei, Kei, Kep, Ep, Ei, Kc.ns, ETc.ns, Dr.end, Dr.initial, Ks, DPr, Kc.act, ETc.act)
+
+Dei.initial = ans$Dei.initial
+Dep.initial = ans$Dep.initial
+Kri = ans$Kri
+Krp = ans$Krp
+W = ans$W
+DPep = ans$DPep
+DPei = ans$DPei
+Kei = ans$Kei
+Kep = ans$Kep
+Ep = ans$Ep
+Ei = ans$Ei
+Dep.end = ans$Dep.end
+Dei.end = ans$Dei.end
+Kc.ns = ans$Kc.ns
+ETc.ns = ans$ETc.ns
+Dr.initial = ans$Dr.initial
+Ks = ans$Ks
+Ir = ans$Ir
+DPr = ans$DPr
+Kc.act = ans$Kc.act
+Dr.end = ans$Dr.end
+ETc.act = ans$ETc.act    
+} else {
+
+# tm1 = proc.time()
+if(TRUE) {    
+   for (i in 2:model.length) { #now for days 2...model.length after initialization
       Dei.initial[i] <- DeiInitialCalc(Dei.end, P, Ir, fw, i)
       Dep.initial[i] <- DepInitialCalc(Dep.end, P, i)
       Kri[i] <- KrCalc(TEW.parameter, REW.parameter, Dei.initial, i)
@@ -332,7 +368,17 @@ FAO56DualCropCalc <- function(cropname, cropcode, AD.percentage, root_depth, irr
       Kc.act[i] <- KcactCalc(Ks, Kcb.adjusted, Kei, Kep, i)
       Dr.end[i] <- DrEndCalc(Dr.end, P, Ir, Kc.act, ETo, DPr, i)
       ETc.act[i] <- ETcactCalc(Kc.act, ETo, i) #could take this out of loop
-    }
+  }
+} else {
+  .Call("loopMain", AD, cropname, days.no.irr, doys.model, ETo, fewi, fewp, fw, Jdev, Jharv, Kcb.adjusted, Kcmax, model.length, P, PAW, RDI.min, REW.parameter, TEW.parameter, Dei.end, Ir, Dei.initial, Dep.end, Dep.initial, Kri, Krp, W, DPep, DPei, Kei, Kep, Ep, Ei, Kc.ns, ETc.ns, Dr.end, Dr.initial, Ks, DPr, Kc.act, ETc.act, integer()) # harvest.days is not defined in our situation.
+}
+#tm2 = proc.time()
+#cat("Loop\n")
+#print(tm2 - tm1)
+}
+
+
+tm1 = proc.time()
     model.result <- data.frame(dates, months, days, years, water.year, doys.model, P, ETo, RHmin, U2,
                                lapply(X=list(Kcb.std=Kcb.std, Kcb.adjusted=Kcb.adjusted, Kcmax=Kcmax, fceff=fc, fw=fw, fewi=fewi, fewp=fewp,
                                           Dei.initial=Dei.initial, Dep.initial=Dep.initial, Kri=Kri, Krp=Krp, W=W, Kei=Kei, Kep=Kep,
@@ -349,10 +395,15 @@ FAO56DualCropCalc <- function(cropname, cropcode, AD.percentage, root_depth, irr
                                           do.call(rbind, lapply(split(model.result, model.result$years), DeepPercCalc, days.no.irr, Jdev, Jharv))),
                                          do.call(rbind, lapply(split(model.result, model.result$water.year), GreenWaterCaptureCalc, Jdev, Jharv, Jmid, cropname)),
                                         by="row.names", all=TRUE)[ ,2:26]
+
+#tm2 = proc.time()
+#cat("Time for model.result")
+#print(tm2 - tm1)    
+
     
     print(paste(scenario.name, as.character(n)))
     
-    if (n == 1 | n %in% rows.to.sample) {
+    if (FALSE && (n == 1 | n %in% rows.to.sample)) {
 #        setwd(file.path(resultsDir, scenario.name))
       dir = file.path(resultsDir, scenario.name)
       filename = if (cropname=='grapes.wine') 
@@ -397,7 +448,7 @@ FAO56DualCropCalc <- function(cropname, cropcode, AD.percentage, root_depth, irr
 }
 
 #function call for Matt and Duncan
-system.time(FAO56DualCropCalc('almond.mature', almond_code, 50, '2.0m', "Microspray, orchards", crop.parameters.df, model.scaffold, U2.df, P.df, ETo.df, RHmin.df, results_file='new', row_start=1, RDI.min = NA, alfalfa.zone = NA, grape.zone=NA))
+tm = system.time(FAO56DualCropCalc('almond.mature', almond_code, 50, '2.0m', "Microspray, orchards", crop.parameters.df, model.scaffold, U2.df, P.df, ETo.df, RHmin.df, results_file='new', row_start=1, RDI.min = NA, alfalfa.zone = NA, grape.zone=NA))
 
 #legend for FAO56 abbreviations
 #De,j=De,j-1 - P,j - Ij/fw + Ej/fewi + DPei,j (again, ignoring tranpiration from upper 10 cm and runoff, eqn. 21) 
