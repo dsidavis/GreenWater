@@ -180,7 +180,7 @@ alfalfa.Kcb.cycles <- function(cycle.no, cycle.length, final.else) {
     max(P[i] - Dep.end[i-1], 0)
   }
   DepEndCalc <- function(Dep.end, P, Ep, fewp, DPep, i) { #DON'T RUN THIS FOR i=1
-    Dep.end.est <- max(Dep.end[i - 1] - P[i] + Ep[i] / fewp[i] + DPep[i], 0)
+     max(Dep.end[i - 1] - P[i] + Ep[i] / fewp[i] + DPep[i], 0)
   } #ignores transpiration and runoff from upper layer
   DPeiCalc <- function(P, Ir, fw, Dei.end, i) { #DON'T RUN THIS FOR i=1
     max(0, P[i] + Ir[i - 1] / fw - Dei.end[i-1])
@@ -245,7 +245,7 @@ alfalfa.Kcb.cycles <- function(cycle.no, cycle.length, final.else) {
 
   GrapeLastIrr <- function() {
     if (cropname == 'grapes.wine') {
-      df <- data.frame(cbind(Kcb.adjusted, ETo, P, doys.model))
+      df <- data.frame(Kcb.adjusted = Kcb.adjusted, ETo = ETo, P = P, doys.model = doys.model)
       df <- df[which(df$doys.model >= Jharv - days.no.irr & df$doys.model <= Jharv), ]
       df$ETcb <- df$Kcb.adjusted * df$ETo
       daily.ETcb <- tapply(df$ETcb, df$doys.model, mean)
