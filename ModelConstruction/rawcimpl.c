@@ -196,22 +196,22 @@ IrCalc(double *Ks, int RDI_min, double AD, double *Dr_initial, int *doys_model, 
 	  return(0);
     } else if (strcmp(cropname, "alfalfa_CV") == 0 || strcmp(cropname, "alfalfa_intermountain") == 0) {
 #if 0	
-        if (doys_model[i] < crop_parameters$Jini[which(crop_parameters$crop==cropname)] || in(doys_model[i], harvest_days) || doys_model[i] > harvest_days[length(harvest_days)] + buffer_days - days_no_irr) 
+        if (doys_model[i] < crop_parameters$Jini[which(crop_parameters$crop==cropname)] || in(doys_model[i], harvest_days) || doys_model[i] > (harvest_days[length(harvest_days)] + buffer_days - days_no_irr) )
 	    return(0);
-        else if(Dr_initial[i] > AD | doys_model[i] == harvest_days[length(harvest_days)] + buffer_days - days_no_irr) 
+        else if(Dr_initial[i] > AD | doys_model[i] == (harvest_days[length(harvest_days)] + buffer_days - days_no_irr)) 
 	    return(Dr_initial[i]);
         else 
 	    return(0);
 #else
 	PROBLEM "not implemented yet" ERROR;
 #endif	
-      } else if (doys_model[i] < Jdev | doys_model[i] > Jharv - days_no_irr) {
+     } else if (doys_model[i] < Jdev | doys_model[i] > (Jharv - days_no_irr)) {
 	  return(0);
-      } else if (strcmp(cropname,"grapes_wine") == 0 & doys_model[i] < Jharv - days_no_irr & Ks[i] < RDI_min) {
+    } else if (strcmp(cropname,"grapes_wine") == 0 && doys_model[i] < (Jharv - days_no_irr) & Ks[i] < RDI_min) {
 	  return(Dr_initial[i] - AD);
       } else if (Dr_initial[i] > AD & strcmp(cropname,  "grapes_wine") != 0) {
 	  return(Dr_initial[i]);
-    } else if (doys_model[i] == Jharv - days_no_irr & strcmp(cropname, "grapes_wine") == 0) {
+    } else if (doys_model[i] == (Jharv - days_no_irr) && strcmp(cropname, "grapes_wine") == 0) {
 #if 0	
 	return(GrapeLastIrr());
 #else
