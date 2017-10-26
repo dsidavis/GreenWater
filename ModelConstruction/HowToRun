@@ -1,0 +1,11 @@
+R CMD SHLIB cloopImpl.c
+
+
+In R, for each R session
+
+dyn.load("cloopImpl.so")
+load("Setup.rda")
+source("FAO56_dualcropcoeff.R")
+source('funs.R')
+
+tm = system.time(FAO56DualCropCalc('almond.mature', almond_code, 50, '2.0m', "Microspray, orchards", crop.parameters.df, model.scaffold, U2.df, P.df, ETo.df, RHmin.df, results_file='new', row_start=1, RDI.min = NA, alfalfa.zone = NA, grape.zone=NA))

@@ -1,7 +1,5 @@
 #include <Rdefines.h>
 
-
-
 #include "rawcimpl.c"
 
 SEXP
@@ -49,7 +47,7 @@ double * AD = REAL(r_AD);
 double * DPr = REAL(r_DPr);
 double * ETc_act = REAL(r_ETc_act);
     
-    for(i = 0; i < model_length; i++) {
+    for(i = 1; i < model_length; i++) {
       Dei_initial[i] = DeiInitialCalc(Dei_end, P, Ir, *fw, i);
       Dep_initial[i] = DepInitialCalc(Dep_end, P, i);
       Kri[i] = KrCalc(*TEW_parameter, *REW_parameter, Dei_initial, i);

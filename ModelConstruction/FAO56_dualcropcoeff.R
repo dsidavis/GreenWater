@@ -19,16 +19,16 @@
 #modelscaffoldDir <- 'C:/Users/smdevine/Desktop/Allowable_Depletion/model_scaffold/run_model/Oct2017' #location of input data; copied from Sep2017 on 10/18/17
 #resultsDir <- 'C:/Users/smdevine/Desktop/Allowable_Depletion/results/Oct2017'
 
-if(FALSE) {
-
 modelscaffoldDir = "Data/Oct2017"
 resultsDir  = "Results"
 resultsDir = file.path(modelscaffoldDir, resultsDir)
-
 rounding_digits <- 3
 scenarios.to.run <- 1000
+
 odir = getwd()
 setwd(modelscaffoldDir)
+
+if(FALSE) {
 irrigation.parameters <- read.csv('irrigation_parameters.csv', stringsAsFactors = F)
 crop.parameters.df <- read.csv('crop_parameters.csv', stringsAsFactors = F) #necessary parameters by crop to run the FAO56 dual crop coefficient ET model
 P.df <- read.csv('PRISM.precip.data.updated9.13.17.csv', stringsAsFactors = F) #this is a daily summary of precip from 10/1/2003-6/25/17 from 'free' daily PRISM 4km resolution for cells of interest in California, created in download_PRISM.R script (from 6/26/17 download); blanks checked for in 'data_QA_QC.R'
@@ -114,7 +114,6 @@ model.scaffold$grape.zone[which(model.scaffold$grape.zone=='Sonoran Basin and Ra
 # pistachio_code <- cropscape_legend$VALUE[cropscape_legend$CLASS_NAME=='Pistachios']
 
 }
-
 
 FAO56DualCropCalc <- function(cropname, cropcode, AD.percentage, root_depth, irr.type, crop.parameters.df, model.scaffold, U2.df, P.df, ETo.df, RHmin.df, results_file, row_start, RDI.min, alfalfa.zone, grape.zone) {
   alfalfa_code <- cropscape_legend$VALUE[cropscape_legend$CLASS_NAME=='Alfalfa']
@@ -344,7 +343,7 @@ ETc.act = ans$ETc.act
 } else {
 
 # tm1 = proc.time()
-if(TRUE) {    
+if(FALSE) {    
    for (i in 2:model.length) { #now for days 2...model.length after initialization
       Dei.initial[i] <- DeiInitialCalc(Dei.end, P, Ir, fw, i)
       Dep.initial[i] <- DepInitialCalc(Dep.end, P, i)
@@ -450,7 +449,7 @@ tm1 = proc.time()
 }
 
 #function call for Matt and Duncan
-tm = system.time(FAO56DualCropCalc('almond.mature', almond_code, 50, '2.0m', "Microspray, orchards", crop.parameters.df, model.scaffold, U2.df, P.df, ETo.df, RHmin.df, results_file='new', row_start=1, RDI.min = NA, alfalfa.zone = NA, grape.zone=NA))
+#tm = system.time(FAO56DualCropCalc('almond.mature', almond_code, 50, '2.0m', "Microspray, orchards", crop.parameters.df, model.scaffold, U2.df, P.df, ETo.df, RHmin.df, results_file='new', row_start=1, RDI.min = NA, alfalfa.zone = NA, grape.zone=NA))
 
 #legend for FAO56 abbreviations
 #De,j=De,j-1 - P,j - Ij/fw + Ej/fewi + DPei,j (again, ignoring tranpiration from upper 10 cm and runoff, eqn. 21) 
